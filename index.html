@@ -2175,31 +2175,47 @@ window.addEventListener("load",()=>{
 </body>
 </html>
 <style>
+  /* Фиксируем меню как выдвижную шторку для мобилок */
   @media screen and (max-width: 768px) {
-    /* Фиксируем сайдбар на мобильных как выплывающую шторку */
-    aside, .sidebar, [class*="sidebar"] {
+    .sidebar, aside, [class*="sidebar"] {
       position: fixed !important;
       top: 0 !important;
       bottom: 0 !important;
+      left: 0 !important;
       z-index: 99999 !important;
       background-color: #ffffff !important;
-      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15) !important;
-      max-width: 80vw !important;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2) !important;
+      transition: transform 0.3s ease !important;
+    }
+
+    /* Когда добавляется класс hide или закрытия */
+    .sidebar.mobile-hidden, aside.mobile-hidden {
+      transform: translateX(-100%) !important;
     }
   }
 </style>
 
 <script>
-  // Автоматически сворачиваем меню при выборе любого раздела на мобильном
-  document.addEventListener('click', (event) => {
+  document.addEventListener('click', (e) => {
     if (window.innerWidth <= 768) {
-      const link = event.target.closest('a, button');
-      if (link && link.closest('aside, .sidebar, [class*="sidebar"]')) {
-        const sidebar = link.closest('aside, .sidebar, [class*="sidebar"]');
-        if (sidebar) {
+      const sidebar = document.querySelector('.sidebar, aside, [class*="sidebar"]');
+      if (!sidebar) return;
+
+      // 1. Если кликнули по самой кнопке открытия (3 полосочки)
+      const isBurger = e.target.closest('.menu-btn, .burger, button, [onclick*="sidebar"]');
+      if (isBurger && !e.target.closest('.sidebar, aside')) {
+        sidebar.classList.toggle('mobile-hidden');
+        return;
+      }
+
+      // 2. Если кликнули на ЛЮБОЙ пункт внутри меню (Главная, Диагностика и т.д.)
+      if (e.target.closest('.sidebar, aside')) {
+        // Даем 100мс, чтобы сработал переход страницы, и прячем меню
+        setTimeout(() => {
+          sidebar.classList.add('mobile-hidden');
           sidebar.classList.remove('active', 'open', 'show');
-        }
+        }, 100);
       }
     }
-  });
+  }, true);
 </script>
