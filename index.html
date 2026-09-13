@@ -2175,37 +2175,31 @@ window.addEventListener("load",()=>{
 </body>
 </html>
 <style>
-  /* Фикс адаптивности бокового меню для смартфонов */
   @media screen and (max-width: 768px) {
+    /* Фиксируем сайдбар на мобильных как выплывающую шторку */
     aside, .sidebar, [class*="sidebar"] {
       position: fixed !important;
       top: 0 !important;
-      left: -100% !important;
-      width: 280px !important;
-      height: 100vh !important;
-      z-index: 9999 !important;
-      background: #ffffff !important;
-      transition: left 0.3s ease !important;
-      box-shadow: 4px 0 15px rgba(0,0,0,0.15) !important;
-    }
-
-    aside.active, .sidebar.active, [class*="sidebar"].active {
-      left: 0 !important;
+      bottom: 0 !important;
+      z-index: 99999 !important;
+      background-color: #ffffff !important;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15) !important;
+      max-width: 80vw !important;
     }
   }
 </style>
 
 <script>
-  // Автоматически скрывать боковое меню при клике на "Диагностику" и другие пункты
-  document.addEventListener('DOMContentLoaded', () => {
-    const navItems = document.querySelectorAll('aside a, .sidebar a, nav a, [class*="sidebar"] a, [class*="nav"] a');
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-          const sidebar = document.querySelector('aside, .sidebar, [class*="sidebar"]');
-          if (sidebar) sidebar.classList.remove('active');
+  // Автоматически сворачиваем меню при выборе любого раздела на мобильном
+  document.addEventListener('click', (event) => {
+    if (window.innerWidth <= 768) {
+      const link = event.target.closest('a, button');
+      if (link && link.closest('aside, .sidebar, [class*="sidebar"]')) {
+        const sidebar = link.closest('aside, .sidebar, [class*="sidebar"]');
+        if (sidebar) {
+          sidebar.classList.remove('active', 'open', 'show');
         }
-      });
-    });
+      }
+    }
   });
 </script>
